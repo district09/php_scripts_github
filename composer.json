@@ -1,0 +1,48 @@
+{
+    "name": "DigipolisGent/github",
+    "homepage": "https://bitbucket.org/DigipolisGentgent/php_scripts_github",
+    "description": "DigipolisGent Github",
+    "keywords": [
+        "DigipolisGent",
+        "bitbucket"
+    ],
+    "type": "project",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Peter Decuyper",
+            "email": "peter.decuyper@DigipolisGent.gent"
+        },
+        {
+            "name": "Dieter Blomme",
+            "email": "dieterblomme@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6",
+        "knplabs/github-api": "^2.6",
+        "php-http/guzzle6-adapter": "^1.1",
+        "phpunit/phpunit": "5.7.*",
+        "psr/log": "^1.0",
+        "symfony/console": "^3.1",
+        "symfony/yaml": "^3.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "DigipolisGent\\Github\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DigipolisGent\\Tests\\Github\\": "tests/"
+        }
+    },
+    "bin": [
+        "bin/bitbucket"
+    ],
+    "config": {
+        "sort-packages": true,
+        "bin-dir": "bin/"
+    }
+}

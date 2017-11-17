@@ -1,0 +1,16 @@
+*.sublime*
+.idea/
+/vendor/
+/composer.phar
+
+# Exclude the config file.
+/config.php
+
+# Exclude generated csv files.
+/csv/
+
+# Exclude test artifacts.
+/build
+
+# Exclude bin files from other packages.
+/bin/phpunit

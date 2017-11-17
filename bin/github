@@ -1,0 +1,5 @@
+#!/usr/bin/env php
+<?php
+
+// Include the php script.
+require __DIR__ . '/github.php';
