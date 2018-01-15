@@ -4,6 +4,12 @@ Scripts to retrieve information from the Github repositories.
 
 
 
+## Requirements
+
+* PHP 7.1 or newer
+* Composer
+
+
 
 ## Installation
 
@@ -33,7 +39,6 @@ Get a list of repositories for the given team name:
 $ bin/github repo:list --access_token='GithubPersonalAccessToken' digipolisgent
 ```
 
-
 ### Get a list of repositories filtered by type(s)
 Get a list of repositories filtered by the provided type.
 
@@ -53,7 +58,6 @@ You can filter for multiple types at once (OR):
 $ bin/github repo:list --access_token='GithubPersonalAccessToken' --type=drupal_module --type=drupal_theme digipolisgent
 ```
 
-
 ### Get a list of repositories filtered by pattern
 Get a list of repositories filtered by a regular expression. The pattern will
 be applied to the repository name.
@@ -67,7 +71,6 @@ You can filer by multiple patterns at once (OR):
 ```bash
 $ bin/bitbucket repo:list --access_token='GithubPersonalAccessToken' --pattern="/^drupal\_/" --pattern="/^php\_/" digipolisgent
 ```
-
 
 ### Find usages of a project within MakeFile sites
 List all drupal sites where a project (install profile, module or theme) is 
