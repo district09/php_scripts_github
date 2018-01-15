@@ -13,4 +13,6 @@
 /build
 
 # Exclude bin files from other packages.
-/bin/phpunit
+/bin/*
+!/bin/github
+!/bin/github.php
