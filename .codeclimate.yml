@@ -1,0 +1,29 @@
+version: "2"
+
+plugins:
+  phpcodesniffer:
+    enabled: true
+    config:
+      standard: "PSR1,PSR2"
+  phpmd:
+    enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+        php:
+          mass_threshold: 55
+  fixme:
+    enabled: true
+  markdownlint:
+    enabled: true
+    checks:
+      # See https://github.com/markdownlint/markdownlint/blob/master/docs/RULES.md
+      MD024:
+        enabled: false
+
+exclude_patterns:
+- ".github"
+- "**/vendor/**/*"
+- "examples/"
+- "tests/"
