@@ -40,19 +40,13 @@ class Composer extends DependencyFileAbstract
      */
     public function searchProject($name)
     {
-        if (array_key_exists('packages', $this->data)) {
-            foreach ($this->data['packages'] as $package_key => $package_info) {
-                if (substr($package_info['name'], -strlen($name)) === $name) {
-                    $factory = new ProjectFactory();
-                    return $factory->create($name, $this->data['packages'][$package_key]);
-                }
-            }
-        }
-        if (array_key_exists('packages-dev', $this->data)) {
-            foreach ($this->data['packages-dev'] as $package_key => $package_info) {
-                if (substr($package_info['name'], -strlen($name)) === $name) {
-                    $factory = new ProjectFactory();
-                    return $factory->create($name, $this->data['packages-dev'][$package_key]);
+        foreach (['packages', 'packages-dev'] as $type) {
+            if (array_key_exists($type, $this->data)) {
+                foreach ($this->data[$type] as $package_key => $package_info) {
+                    if (substr($package_info['name'], -strlen($name)) === $name) {
+                        $factory = new ProjectFactory();
+                        return $factory->create($name, $this->data[$type][$package_key]);
+                    }
                 }
             }
         }
