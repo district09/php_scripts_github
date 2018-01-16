@@ -2,6 +2,8 @@
 
 Scripts to retrieve information from the Github repositories.
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/0c4bdd5079dfb66f3803/maintainability)](https://codeclimate.com/github/digipolisgent/php_scripts_github/maintainability)
+
 
 
 ## Requirements
