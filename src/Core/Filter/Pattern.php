@@ -14,7 +14,7 @@ class Pattern implements FilterInterface
      *
      * @var array
      */
-    private $patterns = array();
+    private $patterns = [];
 
     /**
      * Pass the patterns to filter by during creation.

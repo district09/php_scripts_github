@@ -17,7 +17,7 @@ class RepositoriesFilteredHandler extends RepositoriesHandler
      *
      * @var FilterInterface[]
      */
-    private $filters = array();
+    private $filters = [];
 
     /**
      * Constructor.
@@ -49,7 +49,7 @@ class RepositoriesFilteredHandler extends RepositoriesHandler
      */
     protected function filter(array $repositories)
     {
-        $filtered = array();
+        $filtered = [];
 
         foreach ($repositories as $repository) {
             if (!$this->matchFilters($repository)) {

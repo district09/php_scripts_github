@@ -38,7 +38,7 @@ abstract class HandlerAbstract implements LoggerAwareInterface
      * @param array $context
      *   The log context.
      */
-    protected function log($level, $message, array $context = array())
+    protected function log($level, $message, array $context = [])
     {
         if (!$this->logger) {
             return;

@@ -25,7 +25,7 @@ class ComposerProjectsUsageHandler extends HandlerAbstract implements Dependency
      *
      * @var array
      */
-    private $projects = array();
+    private $projects = [];
 
     /**
      * Construct the handler.

@@ -44,7 +44,7 @@ class RepositoriesHandler extends HandlerAbstract
             $team
         );
 
-        $repositories = array();
+        $repositories = [];
         $page = 1;
 
         // Load the paged content.

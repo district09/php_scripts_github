@@ -34,7 +34,7 @@ class ProjectsUsageHandler extends HandlerAbstract
      *
      * @var array
      */
-    private $projects = array();
+    private $projects = [];
 
     /**
      * Construct the handler.
