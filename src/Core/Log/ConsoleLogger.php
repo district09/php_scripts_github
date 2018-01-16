@@ -107,29 +107,38 @@ class ConsoleLogger implements LoggerInterface
      */
     public function log($level, $message, array $context = [])
     {
-        if ($level === LogLevel::EMERGENCY) {
-            return $this->emergency($message, $context);
-        }
-        if ($level === LogLevel::ALERT) {
-            return $this->alert($message, $context);
-        }
-        if ($level === LogLevel::CRITICAL) {
-            return $this->critical($message, $context);
-        }
-        if ($level === LogLevel::ERROR) {
-            return $this->error($message, $context);
-        }
-        if ($level === LogLevel::WARNING) {
-            return $this->warning($message, $context);
-        }
-        if ($level === LogLevel::NOTICE) {
-            return $this->notice($message, $context);
-        }
-        if ($level === LogLevel::INFO) {
-            return $this->info($message, $context);
-        }
-        if ($level === LogLevel::DEBUG) {
-            return $this->debug($message, $context);
+        switch ($level) {
+            case LogLevel::EMERGENCY:
+                $this->emergency($message, $context);
+                break;
+
+            case LogLevel::ALERT:
+                $this->alert($message, $context);
+                break;
+
+            case LogLevel::CRITICAL:
+                $this->critical($message, $context);
+                break;
+
+            case LogLevel::ERROR:
+                $this->error($message, $context);
+                break;
+
+            case LogLevel::WARNING:
+                $this->warning($message, $context);
+                break;
+
+            case LogLevel::NOTICE:
+                $this->notice($message, $context);
+                break;
+
+            case LogLevel::INFO:
+                $this->info($message, $context);
+                break;
+
+            case LogLevel::DEBUG:
+                $this->debug($message, $context);
+                break;
         }
     }
 }
