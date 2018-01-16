@@ -9,7 +9,6 @@ use DigipolisGent\Github\Core\Project\ProjectInterface;
  */
 interface DependencyFileInterface
 {
-
     /**
      * Create a new DependencyFile object based on raw file contents.
      *

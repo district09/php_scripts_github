@@ -48,5 +48,4 @@ class MakeFile extends DependencyFileAbstract
         $factory = new ProjectFactory();
         return $factory->create($name, $this->data['projects'][$name]);
     }
-
 }

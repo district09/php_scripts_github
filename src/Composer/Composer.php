@@ -59,5 +59,4 @@ class Composer extends DependencyFileAbstract
 
         return false;
     }
-
 }

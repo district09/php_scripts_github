@@ -2,7 +2,6 @@
 
 namespace DigipolisGent\Github\MakeFile\Command;
 
-use Github\API\Repositories\Src;
 use DigipolisGent\Github\Core\Command\AbstractCommand;
 use DigipolisGent\Github\Core\Filter;
 use DigipolisGent\Github\Core\Handler;

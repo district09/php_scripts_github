@@ -13,7 +13,6 @@ use DigipolisGent\Github\Core\Service\Source;
  */
 class ComposerProjectsUsageHandler extends HandlerAbstract implements DependencyFileProjectsUsageHandlerInterface
 {
-
     /**
      * The source service to use.
      *

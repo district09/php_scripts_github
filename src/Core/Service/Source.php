@@ -2,11 +2,10 @@
 
 namespace DigipolisGent\Github\Core\Service;
 
-use Bitbucket\API\Repositories\Src;
 use Github\Client;
 
 /**
- * Wrapper around the Bitbucket\Src Service.
+ * GitHub service.
  *
  * @package DigipolisGent\Github\Core\Service
  */

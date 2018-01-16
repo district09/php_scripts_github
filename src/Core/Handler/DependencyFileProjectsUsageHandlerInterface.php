@@ -2,8 +2,6 @@
 
 namespace DigipolisGent\Github\Core\Handler;
 
-use DigipolisGent\Github\Core\Service\Source;
-
 /**
  * Interface for ProjectsUsageHandler imlementations for DependencyFiles
  */
