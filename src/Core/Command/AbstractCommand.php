@@ -30,7 +30,7 @@ abstract class AbstractCommand extends Command
     {
         $this
             ->addOption(
-                'access_token',
+                'access-token',
                 'u',
                 InputOption::VALUE_REQUIRED,
                 'Github personal access token (https://github.com/settings/tokens)'
@@ -71,7 +71,7 @@ abstract class AbstractCommand extends Command
     {
         try {
             $this->client->authenticate(
-                $input->getOption('access_token'),
+                $input->getOption('access-token'),
                 '',
                 Client::AUTH_HTTP_PASSWORD
             );
