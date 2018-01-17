@@ -6,13 +6,14 @@ use DigipolisGent\Github\Core\Command\AbstractCommand;
 use DigipolisGent\Github\Core\Filter;
 use DigipolisGent\Github\Core\Handler;
 use DigipolisGent\Github\Core\Log\ConsoleLogger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * List available repositories in a team repository.
+ * List available repositories in a team.
  *
  * @package DigipolisGent\Github\Command\Repo
  */
@@ -62,54 +63,41 @@ class ListCommand extends AbstractCommand
 
     /**
      * @inheritdoc
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Get the output style and create the logger.
         $io = new SymfonyStyle($input, $output);
         $logger = new ConsoleLogger($io);
-
-        // Authenticate the client.
-        $this->authenticate($input);
-
-        // Get the proper handler.
-        $filters = $this->getFilters($input);
-        $handler = $filters
-          ? new Handler\RepositoriesFilteredHandler($this->getGithubClient(), $filters)
-          : new Handler\RepositoriesHandler($this->getGithubClient());
-        $handler->setLogger($logger);
-
-        // Get the repositories by the team name.
-        $repositories = $handler->getRepositories(
-            $input->getArgument('team')
-        );
+        $repositories = $this->getRepositories($input, $logger);
 
         $this->writeToScreen($io, $repositories);
     }
 
     /**
-     * Write the output to the screen.
+     * Get the team repositories.
      *
-     * @param SymfonyStyle $io
-     * @param array $repositories
+     * @param InputInterface $input
+     * @param LoggerInterface|NULL $logger
+     *
+     * @return array
+     *   List of repositories.
      */
-    protected function writeToScreen(SymfonyStyle $io, array $repositories)
+    protected function getRepositories(InputInterface $input, LoggerInterface $logger = null)
     {
-        // Create table content.
-        $items = [];
-        foreach ($repositories as $repository) {
-            $items[] = array(
-                $repository['name'],
-                $repository['full_name'],
-            );
+        $this->getGithubClient();
+        $this->authenticate($input);
+        $filters = $this->getFilters($input);
+        $handler = count($filters)
+            ? new Handler\RepositoriesFilteredHandler($this->client, $filters)
+            : new Handler\RepositoriesHandler($this->client);
+
+        if ($logger)
+        {
+            $handler->setLogger($logger);
         }
 
-        $io->table(
-            ['Name', 'Full Name'],
-            $items
+        return $handler->getRepositories(
+            $input->getArgument('team')
         );
     }
 
@@ -135,5 +123,28 @@ class ListCommand extends AbstractCommand
         }
 
         return $filters;
+    }
+
+    /**
+     * Write the output to the screen.
+     *
+     * @param SymfonyStyle $io
+     * @param array $repositories
+     */
+    protected function writeToScreen(SymfonyStyle $io, array $repositories)
+    {
+        // Create table content.
+        $items = [];
+        foreach ($repositories as $repository) {
+            $items[] = array(
+                $repository['name'],
+                $repository['full_name'],
+            );
+        }
+
+        $io->table(
+            ['Name', 'Full Name'],
+            $items
+        );
     }
 }

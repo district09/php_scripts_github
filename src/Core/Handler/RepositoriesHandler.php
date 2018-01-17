@@ -67,4 +67,28 @@ class RepositoriesHandler extends HandlerAbstract
 
         return $repositories;
     }
+
+    /**
+     * Update a repository.
+     *
+     * @param string $owner
+     *   Name of the repository owner.
+     * @param string $repository
+     *   Name of the repository.
+     * @param array $values
+     *   Array of values to post.
+     */
+    public function updateRepository($owner, $repository, array $values)
+    {
+        $this->logVerbose('Updating repository %s/%s...',
+            $owner,
+            $repository
+        );
+
+        if (!array_key_exists('name', $values)) {
+            $values['name'] = $repository;
+        }
+
+        $this->client->api('repo')->update($owner, $repository, $values);
+    }
 }
