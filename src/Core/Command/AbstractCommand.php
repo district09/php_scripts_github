@@ -74,13 +74,13 @@ abstract class AbstractCommand extends Command
     protected function authenticate(InputInterface $input)
     {
         try {
-            $this->client->authenticate(
+            $this->getGithubClient()->authenticate(
                 $input->getOption('access-token'),
                 '',
                 Client::AUTH_HTTP_PASSWORD
             );
         } catch (TwoFactorAuthenticationRequiredException $e) {
-            echo sprintf("Two factor authentication of type %s is required for fucks sake.", $e->getType());
+            echo sprintf('Two factor authentication of type %s is required for fucks sake.', $e->getType());
         }
     }
 }
