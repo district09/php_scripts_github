@@ -91,8 +91,7 @@ class ListCommand extends AbstractCommand
             ? new Handler\RepositoriesFilteredHandler($this->client, $filters)
             : new Handler\RepositoriesHandler($this->client);
 
-        if ($logger)
-        {
+        if ($logger) {
             $handler->setLogger($logger);
         }
 

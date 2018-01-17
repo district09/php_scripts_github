@@ -80,7 +80,8 @@ class RepositoriesHandler extends HandlerAbstract
      */
     public function updateRepository($owner, $repository, array $values)
     {
-        $this->logVerbose('Updating repository %s/%s...',
+        $this->logVerbose(
+            'Updating repository %s/%s...',
             $owner,
             $repository
         );

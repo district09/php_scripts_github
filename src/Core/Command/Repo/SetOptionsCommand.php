@@ -19,7 +19,8 @@ class SetOptionsCommand extends ListCommand
     /**
      * @inheritdoc
      */
-    protected function configure() {
+    protected function configure()
+    {
         parent::configure();
 
         $this
@@ -83,8 +84,7 @@ class SetOptionsCommand extends ListCommand
         // Update the repositories who's options are different.
         $handler = new RepositoriesHandler($this->client);
 
-        foreach ($repositories as $repository)
-        {
+        foreach ($repositories as $repository) {
             foreach ($options as $option => $value) {
                 if ($repository[$option] !== $value) {
                     $handler->updateRepository(
@@ -114,15 +114,16 @@ class SetOptionsCommand extends ListCommand
      * @return bool
      *   TRUE if the option was specified.
      */
-    protected function isOptionSpecified(InputInterface $input, $name) {
+    protected function isOptionSpecified(InputInterface $input, $name)
+    {
         if ($input->hasParameterOption('--' . $name)) {
-            return TRUE;
+            return true;
         }
 
         $option = $this->getDefinition()->getOption($name);
         $name = $option->getShortcut();
 
-        return NULL !== $name && $input->hasParameterOption('-' . $name);
+        return null !== $name && $input->hasParameterOption('-' . $name);
     }
 
     /**
@@ -138,13 +139,14 @@ class SetOptionsCommand extends ListCommand
      * @return bool
      *   The boolean value.
      */
-    protected function getBoolOption(InputInterface $input, $name, $default = TRUE) {
+    protected function getBoolOption(InputInterface $input, $name, $default = true)
+    {
         $value = $input->getOption($name);
 
-        if (NULL === $value) {
+        if (null === $value) {
             return $default;
         }
 
-        return in_array($value, ['1', 'true', 'yes'], TRUE);
+        return in_array($value, ['1', 'true', 'yes'], true);
     }
 }
