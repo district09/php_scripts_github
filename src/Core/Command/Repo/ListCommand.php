@@ -68,19 +68,18 @@ class ListCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Output style.
+        // Get the output style and create the logger.
         $io = new SymfonyStyle($input, $output);
-
-        // Create the logger.
         $logger = new ConsoleLogger($io);
 
-        // Get the proper handler.
-        $this->getGithubClient();
+        // Authenticate the client.
         $this->authenticate($input);
+
+        // Get the proper handler.
         $filters = $this->getFilters($input);
-        $handler = count($filters)
-          ? new Handler\RepositoriesFilteredHandler($this->client, $filters)
-          : new Handler\RepositoriesHandler($this->client);
+        $handler = $filters
+          ? new Handler\RepositoriesFilteredHandler($this->getGithubClient(), $filters)
+          : new Handler\RepositoriesHandler($this->getGithubClient());
         $handler->setLogger($logger);
 
         // Get the repositories by the team name.

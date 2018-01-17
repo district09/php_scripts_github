@@ -64,21 +64,20 @@ class UsageCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        // Get the output style and create the logger.
         $io = new SymfonyStyle($input, $output);
-
-        // Create the logger.
         $logger = new ConsoleLogger($io);
 
-        $this->getGithubClient();
+        // Authenticate the client.
         $this->authenticate($input);
-        // Get all drupal_site repositories.
-        $filters = [
-            new Filter\Type(['drupal8_site']),
-            new Filter\Type(['php_package']),
-        ];
+
+        // Get all drupal8_site and php_package repositories.
         $handler = new Handler\RepositoriesFilteredHandler(
-            $this->client,
-            $filters
+            $this->getGithubClient(),
+            [
+                new Filter\Type(['drupal8_site']),
+                new Filter\Type(['php_package']),
+            ]
         );
         $handler->setLogger($logger);
         $repositories = $handler->getRepositories(
@@ -130,7 +129,7 @@ class UsageCommand extends AbstractCommand
     protected function getSourceService(InputInterface $input)
     {
         return new Source(
-            $this->client,
+            $this->getGithubClient(),
             $input->getArgument('team'),
             $input->getOption('branch')
         );

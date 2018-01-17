@@ -64,19 +64,19 @@ class UsageCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        // Get the output style and create the logger.
         $io = new SymfonyStyle($input, $output);
-
-        // Create the logger.
         $logger = new ConsoleLogger($io);
 
-        $this->getGithubClient();
+        // Authenticate the client.
         $this->authenticate($input);
+
         // Get all drupal_site repositories.
         $filters = [
             new Filter\Type(['drupal_site']),
         ];
         $handler = new Handler\RepositoriesFilteredHandler(
-            $this->client,
+            $this->getGithubClient(),
             $filters
         );
         $handler->setLogger($logger);
@@ -133,7 +133,7 @@ class UsageCommand extends AbstractCommand
     protected function getSourceService(InputInterface $input)
     {
         return new Source(
-            $this->client,
+            $this->getGithubClient(),
             $input->getArgument('team'),
             $input->getOption('branch')
         );

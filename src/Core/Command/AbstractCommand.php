@@ -21,7 +21,7 @@ abstract class AbstractCommand extends Command
      *
      * @var Client
      */
-    protected $client;
+    private $client;
 
     /**
      * Add options to login to Github.
