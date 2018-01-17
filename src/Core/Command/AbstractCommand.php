@@ -59,7 +59,11 @@ abstract class AbstractCommand extends Command
      */
     protected function getGithubClient()
     {
-        $this->client = new Client();
+        if (null === $this->client) {
+            $this->client = new Client();
+        }
+
+        return $this->client;
     }
 
     /**
