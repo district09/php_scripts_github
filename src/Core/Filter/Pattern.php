@@ -21,7 +21,7 @@ class Pattern implements FilterInterface
      *
      * @param array $patterns
      */
-    public function __construct($patterns)
+    public function __construct(array $patterns)
     {
         $this->patterns = $patterns;
     }
@@ -35,8 +35,12 @@ class Pattern implements FilterInterface
      */
     public function passes($value)
     {
-        $count = 0;
-        preg_replace($this->patterns, '', $value, -1, $count);
-        return (bool) $count;
+        foreach ($this->patterns as $pattern) {
+            if (preg_match($pattern, $value)) {
+                return TRUE;
+            }
+        }
+
+        return FALSE;
     }
 }
