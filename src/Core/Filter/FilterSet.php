@@ -70,9 +70,9 @@ class FilterSet implements FilterInterface
         } elseif ($this->operator === self::OPERATOR_XOR && count($this->filters) === 2) {
             throw new \LogicException('An XOR filter set can only contain 2 filters.');
         } else {
-            $base_class = $this->getBaseClass($filter);
+            $baseClass = $this->getBaseClass($filter);
 
-            if (null !== $base_class && $base_class !== $this->baseClass) {
+            if (null !== $baseClass && $baseClass !== $this->baseClass) {
                 throw new \LogicException('The specified filter doesn not implement the other filters in this set.');
             }
         }
