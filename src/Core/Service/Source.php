@@ -19,11 +19,11 @@ class Source
     private $client;
 
     /**
-     * The team name to get the source for.
+     * The organisation name to get the source for.
      *
      * @var string
      */
-    private $team;
+    private $organisation;
 
     /**
      * The branch to get the source for.
@@ -36,13 +36,13 @@ class Source
      * Construct the service.
      *
      * @param Client $client
-     * @param string $team
+     * @param string $organisation
      * @param string $branch
      */
-    public function __construct(Client $client, $team, $branch = 'develop')
+    public function __construct(Client $client, $organisation, $branch = 'develop')
     {
         $this->client = $client;
-        $this->team = $team;
+        $this->organisation = $organisation;
         $this->branch = $branch;
     }
 
@@ -63,7 +63,7 @@ class Source
             ->api('repo')
             ->contents()
             ->show(
-                $this->team,
+                $this->organisation,
                 $repositoryName,
                 $path,
                 $this->branch

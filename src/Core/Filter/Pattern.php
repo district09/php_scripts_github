@@ -10,37 +10,35 @@ namespace DigipolisGent\Github\Core\Filter;
 class Pattern implements FilterInterface
 {
     /**
-     * Patterns to filter by.
+     * Pattern to filter by.
      *
-     * @var array
+     * @var string
      */
-    private $patterns = [];
+    private $pattern;
 
     /**
-     * Pass the patterns to filter by during creation.
+     * Class constructor
      *
-     * @param array $patterns
+     * @param string $pattern
+     *   Pattern to match on.
+     * @param string $delimiter
+     *   The regex delimiter.
      */
-    public function __construct(array $patterns)
+    public function __construct($pattern, $delimiter = '#')
     {
-        $this->patterns = $patterns;
+        if (null !== $delimiter && '' !== $delimiter) {
+            $pattern = str_replace($delimiter, '\\' . $delimiter, $pattern);
+            $pattern = $delimiter . $pattern . $delimiter;
+        }
+
+        $this->pattern = $pattern;
     }
 
     /**
-     * Check if a string passes the filters.
-     *
-     * @param string $value
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function passes($value)
     {
-        foreach ($this->patterns as $pattern) {
-            if (preg_match($pattern, $value)) {
-                return TRUE;
-            }
-        }
-
-        return FALSE;
+        return (bool) preg_match($this->pattern, $value);
     }
 }
