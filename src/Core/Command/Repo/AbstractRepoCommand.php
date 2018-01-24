@@ -36,17 +36,17 @@ abstract class AbstractRepoCommand extends AbstractCommand
 
         // Filter by regular expression.
         $this->addOption(
-            'patterns',
+            'pattern',
             null,
-            InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+            InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
             'Regular expression patterns to filter by name.'
         );
 
         // Filter by type.
         $this->addOption(
-            'types',
+            'type',
             null,
-            InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+            InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
             sprintf(
                 'Repository type to filter by (%s)',
                 implode(', ', Type::supportedTypes())
@@ -104,12 +104,12 @@ abstract class AbstractRepoCommand extends AbstractCommand
     {
         $filters = new FilterSet();
 
-        foreach (['patterns', 'types'] as $type) {
+        foreach (['pattern', 'type'] as $type) {
             if (!$this->isOptionSpecified($input, $type)) {
                 continue;
             }
 
-            $class = ($type === 'patterns' ? Pattern::class : Type::class);
+            $class = ($type === 'pattern' ? Pattern::class : Type::class);
             $patterns = new FilterSet(FilterSet::OPERATOR_OR);
             foreach ($input->getOption($type) as $filter) {
                 $patterns->addFilter(new $class($filter));
