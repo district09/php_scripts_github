@@ -67,9 +67,11 @@ class FilterSet implements FilterInterface
     {
         if (null === $this->baseClass) {
             $this->setBaseClass($filter);
-        } elseif ($this->operator === self::OPERATOR_XOR && count($this->filters) === 2) {
-            throw new \LogicException('An XOR filter set can only contain 2 filters.');
         } else {
+            if ($this->operator === self::OPERATOR_XOR && count($this->filters) === 2) {
+                throw new \LogicException('An XOR filter set can contain only 2 filters.');
+            }
+
             $baseClass = $this->getBaseClass($filter);
 
             if (null !== $baseClass && $baseClass !== $this->baseClass) {
@@ -104,12 +106,13 @@ class FilterSet implements FilterInterface
     private function setBaseClass(FilterInterface $filter)
     {
         $this->baseClass = $this->getBaseClass($filter);
+        if (null === $this->baseClass) {
+            return;
+        }
 
-        if (null !== $this->baseClass) {
-            foreach ($this->filters as $item) {
-                if ($item instanceof static) {
-                    $item->setBaseClass($this);
-                }
+        foreach ($this->filters as $item) {
+            if ($item instanceof static) {
+                $item->setBaseClass($this);
             }
         }
     }
@@ -181,17 +184,17 @@ class FilterSet implements FilterInterface
      */
     private function passesOr($value)
     {
-        if ($this->filters) {
-            foreach ($this->filters as $filter) {
-                if ($filter->passes($value)) {
-                    return true;
-                }
-            }
-
-            return false;
+        if (!$this->filters) {
+            return true;
         }
 
-        return true;
+        foreach ($this->filters as $filter) {
+            if ($filter->passes($value)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -208,9 +211,9 @@ class FilterSet implements FilterInterface
             return $this->passesOr($value);
         }
 
-        $a = reset($this->filters);
-        $b = end($this->filters);
+        $first = reset($this->filters);
+        $last = end($this->filters);
 
-        return $a->passes($value) xor $b->passes($value);
+        return $first->passes($value) xor $last->passes($value);
     }
 }
