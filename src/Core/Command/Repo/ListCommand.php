@@ -2,7 +2,6 @@
 
 namespace DigipolisGent\Github\Core\Command\Repo;
 
-use DigipolisGent\Github\Core\Handler\RepositoryHandler;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -11,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package DigipolisGent\Github\Core\Command\Repo
  */
-class ListCommand extends AbstractCommand
+class ListCommand extends AbstractRepoCommand
 {
     /**
      * @inheritdoc

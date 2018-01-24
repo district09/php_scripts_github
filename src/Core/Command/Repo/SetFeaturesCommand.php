@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package DigipolisGent\Github\Core\Command\Repo
  */
-class SetFeaturesCommand extends AbstractCommand
+class SetFeaturesCommand extends AbstractRepoCommand
 {
     /**
      * @inheritdoc

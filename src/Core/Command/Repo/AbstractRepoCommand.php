@@ -5,7 +5,7 @@ namespace DigipolisGent\Github\Core\Command\Repo;
 use DigipolisGent\Github\Core\Filter\FilterSet;
 use DigipolisGent\Github\Core\Filter\Pattern;
 use DigipolisGent\Github\Core\Filter\Type;
-use DigipolisGent\Github\Core\Command\AbstractCommand as ParentAbstractCommand;
+use DigipolisGent\Github\Core\Command\AbstractCommand;
 use DigipolisGent\Github\Core\Handler\RepositoryHandler;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -13,9 +13,9 @@ use Symfony\Component\Console\Input\InputOption;
 /**
  * Abstract base class for commands.
  *
- * @package DigipolisGent\Github\Core\Command
+ * @package DigipolisGent\Github\Core\Command\Repo
  */
-abstract class AbstractCommand extends ParentAbstractCommand
+abstract class AbstractRepoCommand extends AbstractCommand
 {
     /**
      * The repository handler.
