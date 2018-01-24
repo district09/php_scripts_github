@@ -65,13 +65,13 @@ class FilterSet implements FilterInterface
      */
     public function addFilter(FilterInterface $filter)
     {
+        if ($this->operator === self::OPERATOR_XOR && count($this->filters) === 2) {
+            throw new \LogicException('An XOR filter set can contain only 2 filters.');
+        }
+
         if (null === $this->baseClass) {
             $this->setBaseClass($filter);
         } else {
-            if ($this->operator === self::OPERATOR_XOR && count($this->filters) === 2) {
-                throw new \LogicException('An XOR filter set can contain only 2 filters.');
-            }
-
             $baseClass = $this->getBaseClass($filter);
 
             if (null !== $baseClass && $baseClass !== $this->baseClass) {

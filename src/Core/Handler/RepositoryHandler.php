@@ -26,10 +26,7 @@ class RepositoryHandler extends HandlerAbstract
      */
     public function getByOrganisation($organisation, FilterSet $filters = null)
     {
-        $this->logVerbose(
-            'Retrieving repositories of %s...',
-            $organisation
-        );
+        $this->logVerbose('Retrieving repositories of %s...', $organisation);
 
         $repositories = [];
         $page = 1;
@@ -51,10 +48,7 @@ class RepositoryHandler extends HandlerAbstract
             );
         } while ($page++);
 
-        $this->logVerbose(
-            'Found %d repositories.',
-            count($repositories)
-        );
+        $this->logVerbose('Found %d repositories.', count($repositories));
 
         if ($filters && !$filters->isEmpty()) {
             $repositories = $this->filter($repositories, $filters);

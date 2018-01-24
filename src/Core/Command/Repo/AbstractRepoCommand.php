@@ -104,22 +104,18 @@ abstract class AbstractRepoCommand extends AbstractCommand
     {
         $filters = new FilterSet();
 
-        if ($this->isOptionSpecified($input, 'patterns')) {
+        foreach (['patterns', 'types'] as $type) {
+            if (!$this->isOptionSpecified($input, $type)) {
+                continue;
+            }
+
+            $class = ($type === 'patterns' ? Pattern::class : Type::class);
             $patterns = new FilterSet(FilterSet::OPERATOR_OR);
-            foreach ($input->getOption('patterns') as $pattern) {
-                $patterns->addFilter(new Pattern($pattern));
+            foreach ($input->getOption($type) as $filter) {
+                $patterns->addFilter(new $class($filter));
             }
 
             $filters->addFilter($patterns);
-        }
-
-        if ($this->isOptionSpecified($input, 'types')) {
-            $types = new FilterSet(FilterSet::OPERATOR_OR);
-            foreach ($input->getOption('types') as $type) {
-                $types->addFilter(new Type($type));
-            }
-
-            $filters->addFilter($types);
         }
 
         return $filters;
