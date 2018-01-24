@@ -42,10 +42,7 @@ class RepositoryHandler extends HandlerAbstract
 
             $repositories = array_merge($repositories, $fetched);
 
-            $this->logVerbose(
-                '  > Added %d repositories to list.',
-                count($fetched)
-            );
+            $this->logVerbose('  > Added %d repositories to list.', count($fetched));
         } while ($page++);
 
         $this->logVerbose('Found %d repositories.', count($repositories));
