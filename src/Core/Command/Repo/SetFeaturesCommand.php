@@ -2,6 +2,7 @@
 
 namespace DigipolisGent\Github\Core\Command\Repo;
 
+use DigipolisGent\Github\Core\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -11,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package DigipolisGent\Github\Core\Command\Repo
  */
-class SetFeaturesCommand extends AbstractRepoCommand
+class SetFeaturesCommand extends AbstractCommand
 {
     /**
      * @inheritdoc
@@ -23,7 +24,9 @@ class SetFeaturesCommand extends AbstractRepoCommand
         $this
             ->setName('repo:set-features')
             ->setDescription('Control repository features.')
-            ->setHelp('Enable or disable specific features for the repositories of an organisation.');
+            ->setHelp('Enable or disable specific features for the repositories of an organisation.')
+            ->addRepositoryOptions()
+            ->addOrganisationArgument();
 
         // Control the "issues" feature.
         $this->addOption(
@@ -117,7 +120,7 @@ class SetFeaturesCommand extends AbstractRepoCommand
     {
         foreach ($features as $feature => $status) {
             if ($repository[$feature] !== $status) {
-                $this->getHandler()->update(
+                $this->getRepositoryHandler()->update(
                     $repository['owner']['login'],
                     $repository['name'],
                     $features

@@ -2,6 +2,7 @@
 
 namespace DigipolisGent\Github\Core\Command\Repo;
 
+use DigipolisGent\Github\Core\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -10,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package DigipolisGent\Github\Core\Command\Repo
  */
-class ListCommand extends AbstractRepoCommand
+class ListCommand extends AbstractCommand
 {
     /**
      * @inheritdoc
@@ -22,7 +23,9 @@ class ListCommand extends AbstractRepoCommand
         $this
             ->setName('repo:list')
             ->setDescription('List repositories.')
-            ->setHelp('List the repositories that belong to specified organisation.');
+            ->setHelp('List the repositories that belong to specified organisation.')
+            ->addRepositoryOptions()
+            ->addOrganisationArgument();
     }
 
     /**

@@ -2,6 +2,10 @@
 
 namespace DigipolisGent\Github\Core\Command;
 
+use DigipolisGent\Github\Core\Filter\FilterSet;
+use DigipolisGent\Github\Core\Filter\Pattern;
+use DigipolisGent\Github\Core\Filter\Type;
+use DigipolisGent\Github\Core\Handler\RepositoryHandler;
 use DigipolisGent\Github\Core\Log\ConsoleLogger;
 use Github\Client;
 use Github\Exception\TwoFactorAuthenticationRequiredException;
@@ -44,6 +48,13 @@ abstract class AbstractCommand extends Command
     private $client;
 
     /**
+     * The repository handler.
+     *
+     * @var RepositoryHandler
+     */
+    private $repoHandler;
+
+    /**
      * @inheritdoc
      */
     protected function configure()
@@ -59,15 +70,48 @@ abstract class AbstractCommand extends Command
     }
 
     /**
-     * Add the organisation argument.
+     * Add the repository filters.
+     *
+     * @return self
      */
-    protected function requireOrganisation()
+    protected function addRepositoryOptions()
+    {
+        // Filter by regular expression.
+        $this->addOption(
+            'pattern',
+            null,
+            InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+            'Regular expression patterns to filter by name.'
+        );
+
+        // Filter by type.
+        $this->addOption(
+            'type',
+            null,
+            InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+            sprintf(
+                'Repository type to filter by (%s)',
+                implode(', ', Type::supportedTypes())
+            )
+        );
+
+        return $this;
+    }
+
+    /**
+     * Add the organisation argument.
+     *
+     * @return self
+     */
+    protected function addOrganisationArgument()
     {
         $this->addArgument(
             'organisation',
             InputArgument::REQUIRED,
             'Name of the github organisation.'
         );
+
+        return $this;
     }
 
     /**
@@ -126,6 +170,24 @@ abstract class AbstractCommand extends Command
     }
 
     /**
+     * Get the repository handler.
+     *
+     * @return RepositoryHandler
+     */
+    protected function getRepositoryHandler()
+    {
+        if (null === $this->repoHandler) {
+            $this->repoHandler = new RepositoryHandler($this->getClient());
+
+            if ($this->logger) {
+                $this->repoHandler->setLogger($this->logger);
+            }
+        }
+
+        return $this->repoHandler;
+    }
+
+    /**
      * Get the specified organisation.
      *
      * @param InputInterface $input
@@ -142,6 +204,55 @@ abstract class AbstractCommand extends Command
         }
 
         return $input->getArgument('organisation');
+    }
+
+    /**
+     * Parse the specified filters.
+     *
+     * @param InputInterface $input
+     *   The input interface.
+     *
+     * @return FilterSet
+     */
+    protected function getRepositoryFilters($input)
+    {
+        $filters = new FilterSet();
+
+        foreach (['pattern', 'type'] as $type) {
+            if (!$this->isOptionSpecified($input, $type)) {
+                continue;
+            }
+
+            $class = ($type === 'pattern' ? Pattern::class : Type::class);
+            $patterns = new FilterSet(FilterSet::OPERATOR_OR);
+            foreach ($input->getOption($type) as $filter) {
+                $patterns->addFilter(new $class($filter));
+            }
+
+            $filters->addFilter($patterns);
+        }
+
+        return $filters;
+    }
+
+    /**
+     * Get the organisation repositories that match the specified filters.
+     *
+     * @param InputInterface $input
+     *   The input interface.
+     *
+     * @return array
+     *   An array of repositories as returned by the GitHub API.
+     *
+     * @throws \Exception
+     */
+    protected function getRepositories(InputInterface $input)
+    {
+        return $this->getRepositoryHandler()
+            ->getByOrganisation(
+                $this->getOrganisation($input),
+                $this->getRepositoryFilters($input)
+            );
     }
 
     /**
