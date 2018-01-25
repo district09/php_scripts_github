@@ -79,13 +79,14 @@ class SetFeaturesCommand extends AbstractCommand
      * Get the features to enable or disable.
      *
      * @param InputInterface $input
-     *   The input interface.
+     *   The input object.
      *
      * @return array
      *   Array of specified features.
      */
     protected function getFeatures(InputInterface $input)
     {
+        $input = $this->convertInput($input);
         $options = [
             'has-issues' => 'has_issues',
             'has-wiki' => 'has_wiki',
@@ -94,9 +95,8 @@ class SetFeaturesCommand extends AbstractCommand
 
         $features = [];
         foreach ($options as $option => $feature) {
-            if ($this->isOptionSpecified($input, $option)) {
-                $value = $input->getOption($option);
-                $features[$feature] = in_array($value, [null, '1', 'true', 'y', 'yes'], true);
+            if ($input->isOptionSpecified($option)) {
+                $features[$feature] = $input->getBoolOption($option);
             }
         }
 
