@@ -30,7 +30,7 @@ class UsageCommand extends AbstractCommand
             ->setName('makefile:usage')
             ->setDescription('Find project usages.')
             ->setHelp('Find the MakeFile sites that use one of the given projects (install profile, module or theme).')
-            ->requireOrganisation();
+            ->addOrganisationArgument();
 
         // Optional branch to search in the site repositories.
         $this->addOption(

@@ -31,7 +31,7 @@ class UsageCommand extends AbstractCommand
             ->setName('composer:usage')
             ->setDescription('Find project usages.')
             ->setHelp('Find the Composer sites that use one of the given projects.')
-            ->requireOrganisation();
+            ->addOrganisationArgument();
 
         // Optional branch to search in the site repositories.
         $this->addOption(
