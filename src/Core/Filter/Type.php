@@ -3,51 +3,41 @@
 namespace DigipolisGent\Github\Core\Filter;
 
 /**
- * Filter by one or more repository types.
+ * Filter by repository type.
  *
  * @package DigipolisGent\Github\Core\Filter
  */
 class Type extends Pattern
 {
     /**
-     * Supported types.
+     * Class constructor.
      *
-     * @var string
+     * @param string $type
+     *   Type to filter by.
      */
-    // TODO: Put this in configuration
-    private $types = array(
-        'drupal_module' => '/^drupal_module/',
-        'drupal_profile' => '/^drupal_profile/',
-        'drupal_site' => '/^drupal_site/',
-        'drupal_theme' => '/^drupal_theme/',
-        'drupal8_site' => '/^drupal8_site/',
-        'drupal8_module' => '/^drupal_module/',
-        'php_package' => '/^php_package/',
-    );
-
-    /**
-     * Pass the types to filter by during creation.
-     *
-     * @param array $types
-     *   Types to filter by.
-     */
-    public function __construct(array $types)
+    public function __construct($type)
     {
-        $patterns = array_intersect_key(
-            $this->types,
-            array_flip($types)
-        );
-        parent::__construct(array_values($patterns));
+        $pattern = preg_quote($type, '#');
+        $pattern = '#^' . $pattern . '#';
+
+        parent::__construct($pattern, null);
     }
 
     /**
-     * Allowed types.
+     * Get the supported types.
      *
-     * @return array.
+     * @return array
      */
-    public static function allowedTypes()
+    public static function supportedTypes()
     {
-        $filter = new static(array());
-        return array_keys($filter->types);
+        return [
+            'drupal_module',
+            'drupal_profile',
+            'drupal_site',
+            'drupal_theme',
+            'drupal8_site',
+            'drupal8_module',
+            'php_package',
+        ];
     }
 }

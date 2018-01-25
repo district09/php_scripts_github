@@ -2,6 +2,7 @@
 
 namespace DigipolisGent\Github\Core\Handler;
 
+use Github\Client;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -14,11 +15,29 @@ use Psr\Log\LogLevel;
 abstract class HandlerAbstract implements LoggerAwareInterface
 {
     /**
+     * GitHub client.
+     *
+     * @var Client
+     */
+    protected $client;
+
+    /**
      * Logger instance.
      *
      * @var LoggerInterface
      */
     private $logger;
+
+    /**
+     * Class constructor.
+     *
+     * @param Client $client
+     *   The GitHub client.
+     */
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+    }
 
     /**
      * @inheritDoc
