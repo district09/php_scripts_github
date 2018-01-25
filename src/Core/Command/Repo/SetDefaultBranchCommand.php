@@ -2,9 +2,9 @@
 
 namespace DigipolisGent\Github\Core\Command\Repo;
 
+use DigipolisGent\Github\Core\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package DigipolisGent\Github\Core\Command\Repo
  */
-class SetDefaultBranchCommand extends AbstractRepoCommand
+class SetDefaultBranchCommand extends AbstractCommand
 {
     /**
      * @inheritdoc
@@ -24,7 +24,9 @@ class SetDefaultBranchCommand extends AbstractRepoCommand
         $this
             ->setName('repo:set-default-branch')
             ->setDescription('Set the default branch.')
-            ->setHelp('Sets the default branch for the repositories of an organisation.');
+            ->setHelp('Sets the default branch for the repositories of an organisation.')
+            ->addRepositoryOptions()
+            ->addOrganisationArgument();
 
         $this->addArgument(
             'branch',
@@ -43,8 +45,12 @@ class SetDefaultBranchCommand extends AbstractRepoCommand
         // Update the respoitories.
         $updated = 0;
         foreach ($this->getRepositories($input) as $repository) {
-            if ($this->updateRepository($repository, $branch)) {
-                $updated++;
+            try {
+                if ($this->updateRepository($repository, $branch)) {
+                    $updated++;
+                }
+            } catch (\Exception $ex) {
+                $this->logger->error($ex->getMessage());
             }
         }
 
@@ -67,7 +73,7 @@ class SetDefaultBranchCommand extends AbstractRepoCommand
     protected function updateRepository(array $repository, $branch)
     {
         if ($repository['default_branch'] !== $branch) {
-            $this->getHandler()->update(
+            $this->getRepositoryHandler()->update(
                 $repository['owner']['login'],
                 $repository['name'],
                 [ 'default_branch' => $branch ]
