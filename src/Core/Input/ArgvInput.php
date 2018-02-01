@@ -134,7 +134,7 @@ class ArgvInput implements InputInterface
      * @param string $name
      *   The option name.
      * @param bool $trueIfNull
-     *   Return true if the option doesn't have a value.
+     *   Return true if the option is specified but doesn't have a value.
      *
      * @return bool
      */
@@ -142,7 +142,7 @@ class ArgvInput implements InputInterface
     {
         $true = ['1', 'true', 'y', 'yes'];
 
-        if ($trueIfNull) {
+        if ($trueIfNull && $this->isOptionSpecified($name)) {
             $true[] = null;
         }
 

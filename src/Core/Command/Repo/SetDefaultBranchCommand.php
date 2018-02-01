@@ -42,7 +42,7 @@ class SetDefaultBranchCommand extends AbstractCommand
     {
         $branch = $input->getArgument('branch');
 
-        // Update the respoitories.
+        // Update the repositories.
         $updated = 0;
         foreach ($this->getRepositories($input) as $repository) {
             try {

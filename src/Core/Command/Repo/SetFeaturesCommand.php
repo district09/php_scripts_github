@@ -64,7 +64,7 @@ class SetFeaturesCommand extends AbstractCommand
             return;
         }
 
-        // Update the respoitories.
+        // Update the repositories.
         $updated = 0;
         foreach ($this->getRepositories($input) as $repository) {
             if ($this->updateRepository($repository, $features)) {
