@@ -7,6 +7,7 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use DigipolisGent\Github\Application;
+use DigipolisGent\Github\Core\Command\Branch\ProtectCommand;
 use DigipolisGent\Github\Core\Command\Repo\ListCommand;
 use DigipolisGent\Github\Core\Command\Repo\SetDefaultBranchCommand;
 use DigipolisGent\Github\Core\Command\Repo\SetFeaturesCommand;
@@ -20,6 +21,7 @@ $application = new Application();
 $application->add(new ListCommand());
 $application->add(new SetFeaturesCommand());
 $application->add(new SetDefaultBranchCommand());
+$application->add(new ProtectCommand());
 $application->add(new MakeFileUsageCommand());
 $application->add(new ComposerUsageCommand());
 

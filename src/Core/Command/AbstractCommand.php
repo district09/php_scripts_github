@@ -6,6 +6,7 @@ use DigipolisGent\Github\Core\Filter\FilterSet;
 use DigipolisGent\Github\Core\Filter\Pattern;
 use DigipolisGent\Github\Core\Filter\Type;
 use DigipolisGent\Github\Core\Handler\RepositoryHandler;
+use DigipolisGent\Github\Core\Input\ArgvInput;
 use DigipolisGent\Github\Core\Log\ConsoleLogger;
 use Github\Client;
 use Github\Exception\TwoFactorAuthenticationRequiredException;
@@ -123,7 +124,9 @@ abstract class AbstractCommand extends Command
         $this->logger = new ConsoleLogger($this->outputStyle);
 
         try {
-            if ($this->isOptionSpecified($input, 'access-token')) {
+            $input = $this->convertInput($input);
+
+            if ($input->isOptionSpecified('access-token')) {
                 $this->authenticate($input);
             }
         } catch (InvalidOptionException $ex) {
@@ -135,7 +138,7 @@ abstract class AbstractCommand extends Command
      * Use authentication during the GitHub API requests.
      *
      * @param InputInterface $input
-     *   The input interface.
+     *   The input object.
      *
      * @throws InvalidOptionException
      */
@@ -153,6 +156,23 @@ abstract class AbstractCommand extends Command
                 sprintf('Two factor authentication of type %s is required.', $e->getType())
             );
         }
+    }
+
+    /**
+     * Convert the default input object to our own class.
+     *
+     * @param InputInterface $input
+     *   The input object.
+     *
+     * @return ArgvInput
+     */
+    protected function convertInput(InputInterface $input)
+    {
+        if ($input instanceof ArgvInput) {
+            return $input;
+        }
+
+        return new ArgvInput($this->getDefinition(), $input);
     }
 
     /**
@@ -191,7 +211,7 @@ abstract class AbstractCommand extends Command
      * Get the specified organisation.
      *
      * @param InputInterface $input
-     *   The input interface.
+     *   The input object.
      *
      * @return string
      *
@@ -210,16 +230,17 @@ abstract class AbstractCommand extends Command
      * Parse the specified filters.
      *
      * @param InputInterface $input
-     *   The input interface.
+     *   The input object.
      *
      * @return FilterSet
      */
-    protected function getRepositoryFilters($input)
+    protected function getRepositoryFilters(InputInterface $input)
     {
+        $input = $this->convertInput($input);
         $filters = new FilterSet();
 
         foreach (['pattern', 'type'] as $type) {
-            if (!$this->isOptionSpecified($input, $type)) {
+            if (!$input->isOptionSpecified($type)) {
                 continue;
             }
 
@@ -239,7 +260,7 @@ abstract class AbstractCommand extends Command
      * Get the organisation repositories that match the specified filters.
      *
      * @param InputInterface $input
-     *   The input interface.
+     *   The input object.
      *
      * @return array
      *   An array of repositories as returned by the GitHub API.
@@ -253,35 +274,5 @@ abstract class AbstractCommand extends Command
                 $this->getOrganisation($input),
                 $this->getRepositoryFilters($input)
             );
-    }
-
-    /**
-     * Check if an option has been specified.
-     *
-     * @param InputInterface $input
-     *   The input interface.
-     * @param string $name
-     *   The option name.
-     *
-     * @return bool
-     *
-     * @throws InvalidOptionException
-     */
-    protected function isOptionSpecified(InputInterface $input, $name)
-    {
-        if (!$input->hasOption($name)) {
-            throw new InvalidOptionException(
-                sprintf("The %s option doesn't exists.", $name)
-            );
-        }
-
-        if ($input->hasParameterOption('--' . $name)) {
-            return true;
-        }
-
-        $option = $this->getDefinition()->getOption($name);
-        $name = $option->getShortcut();
-
-        return null !== $name && $input->hasParameterOption('-' . $name);
     }
 }
