@@ -1,10 +1,10 @@
 {
     "name": "digipolisgent/github-scripts",
-    "homepage": "https://bitbucket.org/DigipolisGentgent/php_scripts_github",
+    "homepage": "https://github.com/digipolisgent/php_scripts_github",
     "description": "DigipolisGent Github",
     "keywords": [
         "DigipolisGent",
-        "bitbucket"
+        "github"
     ],
     "type": "project",
     "license": "MIT",
@@ -39,7 +39,7 @@
         }
     },
     "bin": [
-        "bin/bitbucket"
+        "bin/github"
     ],
     "config": {
         "sort-packages": true,
