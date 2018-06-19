@@ -53,7 +53,10 @@ class MakeFileProjectsUsageHandler extends HandlerAbstract implements Dependency
 
         // Get the make file for the repository.
         $response = $this->service->raw($repository['name'], 'build.make.yml');
-        $makeFile = $response->getContent();
+        if (!array_key_exists('content', $response)) {
+            return;
+        }
+        $makeFile = base64_decode($response['content']);
 
         foreach ($projects as $project) {
             if ($this->getUsageInRepositoryAsBrick($project, $makeFile)) {
@@ -173,7 +176,7 @@ class MakeFileProjectsUsageHandler extends HandlerAbstract implements Dependency
             'custom/profile/' . $profile . '/' . $profile . 'info'
         );
 
-        return $response->isSuccessful();
+        return array_key_exists('content', $response);
     }
 
     /**
@@ -194,7 +197,7 @@ class MakeFileProjectsUsageHandler extends HandlerAbstract implements Dependency
             "custom/modules/custom/{$module}/{$module}.info"
         );
 
-        return $response->isSuccessful();
+        return array_key_exists('content', $response);
     }
 
     /**
@@ -215,7 +218,7 @@ class MakeFileProjectsUsageHandler extends HandlerAbstract implements Dependency
             "custom/modules/features/{$feature}/{$feature}.info"
         );
 
-        return $response->isSuccessful();
+        return array_key_exists('content', $response);
     }
 
     /**
@@ -236,6 +239,6 @@ class MakeFileProjectsUsageHandler extends HandlerAbstract implements Dependency
             "custom/themes/{$theme}/{$theme}.info"
         );
 
-        return $response->isSuccessful();
+        return array_key_exists('content', $response);
     }
 }
