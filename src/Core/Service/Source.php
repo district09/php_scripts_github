@@ -3,6 +3,7 @@
 namespace DigipolisGent\Github\Core\Service;
 
 use Github\Client;
+use Github\Exception\RuntimeException;
 
 /**
  * GitHub service.
@@ -58,16 +59,21 @@ class Source
      */
     public function raw($repositoryName, $path)
     {
-        $response = $this
-            ->client
-            ->api('repo')
-            ->contents()
-            ->show(
-                $this->organisation,
-                $repositoryName,
-                $path,
-                $this->branch
-            );
+        try {
+            $response = $this
+                ->client
+                ->api('repo')
+                ->contents()
+                ->show(
+                    $this->organisation,
+                    $repositoryName,
+                    $path,
+                    $this->branch
+                );
+        } catch (RuntimeException $e) {
+            // Do nothing if exception was thrown.
+            return [];
+        }
 
         return $response;
     }

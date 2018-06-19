@@ -53,7 +53,10 @@ class ComposerProjectsUsageHandler extends HandlerAbstract implements Dependency
 
         // Get the composer.lock file for the repository.
         $response = $this->service->raw($repository['name'], 'composer.lock');
-        $composer = $response->getContent();
+        if (!array_key_exists('content', $response)) {
+            return;
+        }
+        $composer = base64_decode($response['content']);
 
         foreach ($projects as $projectName) {
             $composerContent = Composer::fromRaw($composer);
