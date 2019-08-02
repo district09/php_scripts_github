@@ -49,7 +49,6 @@ class ComposerProjectsUsageHandler extends HandlerAbstract implements Dependency
      */
     public function getUsageInRepository($repository, array &$found)
     {
-        print $repository['name'] . "\n";
         $projects = $this->projects;
         // Get the composer.lock file for the repository.
         $response = $this->service->raw($repository['name'], 'composer.lock');
