@@ -38,6 +38,9 @@ class Type extends Pattern
             'drupal8_site',
             'drupal8_module',
             'php_package',
+            'symfony_site',
+            'laravel_site',
+            'generic_site',
         ];
     }
 }

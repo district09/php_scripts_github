@@ -20,6 +20,9 @@ class ProjectsUsageHandler extends HandlerAbstract
         'drupal_site' => 'DigipolisGent\Github\MakeFile\MakeFileProjectsUsageHandler',
         'drupal8_site' => 'DigipolisGent\Github\Composer\ComposerProjectsUsageHandler',
         'php_package' => 'DigipolisGent\Github\Composer\ComposerProjectsUsageHandler',
+        'symfony_site' => 'DigipolisGent\Github\Composer\ComposerProjectsUsageHandler',
+        'laravel_site' => 'DigipolisGent\Github\Composer\ComposerProjectsUsageHandler',
+        'generic_site' => 'DigipolisGent\Github\Composer\ComposerProjectsUsageHandler',
     );
 
     /**

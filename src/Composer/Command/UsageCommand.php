@@ -59,6 +59,9 @@ class UsageCommand extends AbstractCommand
         $filters = new FilterSet(FilterSet::OPERATOR_OR);
         $filters->addFilter(new Type('drupal8_site'));
         $filters->addFilter(new Type('php_package'));
+        $filters->addFilter(new Type('generic_site'));
+        $filters->addFilter(new Type('symfony_site'));
+        $filters->addFilter(new Type('laravel_site'));
 
         // Get the handler.
         $handler = new RepositoryHandler($this->getClient());
