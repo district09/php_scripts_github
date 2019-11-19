@@ -2,6 +2,7 @@
 .idea/
 /vendor/
 /composer.phar
+/composer.lock
 
 # Exclude the config file.
 /config.php
