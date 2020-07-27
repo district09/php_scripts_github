@@ -87,3 +87,17 @@ You can search usages for multiple projects at once:
 ```bash
 $ bin/github makefile:usage --access-token='GithubPersonalAccessToken' digipolisgent project_name1 project_name2 project_name3
 ```
+
+### Find usages of a project within Composer sites
+List all drupal sites where a project (install profile, module or theme) is 
+used.
+
+```bash
+$ bin/github composer:usage --access-token='GithubPersonalAccessToken' digipolisgent project_name
+```
+
+You can search usages for multiple projects at once:
+
+```bash
+$ bin/github composer:usage --access-token='GithubPersonalAccessToken' digipolisgent project_name1 project_name2 project_name3
+```
