@@ -4,6 +4,9 @@ namespace DigipolisGent\Github\Core\Service;
 
 use Github\Client;
 use Github\Exception\RuntimeException;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\Cache\Adapter\NullAdapter;
+use Symfony\Contracts\Cache\CacheInterface;
 
 /**
  * GitHub service.
@@ -34,6 +37,11 @@ class Source
     private $branch;
 
     /**
+     * @var CacheInterface
+     */
+    protected $cache;
+
+    /**
      * Construct the service.
      *
      * @param Client $client
@@ -45,6 +53,17 @@ class Source
         $this->client = $client;
         $this->organisation = $organisation;
         $this->branch = $branch;
+        $this->disableCache();
+    }
+
+    public function disableCache()
+    {
+        $this->cache = new NullAdapter();
+    }
+
+    public function enableCache()
+    {
+        $this->cache = new ArrayAdapter();
     }
 
     /**
@@ -59,17 +78,21 @@ class Source
      */
     public function raw($repositoryName, $path)
     {
+        $key = $repositoryName . ':' . $path;
         try {
-            $response = $this
-                ->client
-                ->api('repo')
-                ->contents()
-                ->show(
-                    $this->organisation,
-                    $repositoryName,
-                    $path,
-                    $this->branch
-                );
+            $response = $this->cache->get($key, function () use ($repositoryName, $path) {
+                return $this
+                    ->client
+                    ->api('repo')
+                    ->contents()
+                    ->show(
+                        $this->organisation,
+                        $repositoryName,
+                        $path,
+                        $this->branch
+                    );
+            });
+
         } catch (RuntimeException $e) {
             // Do nothing if exception was thrown.
             return [];
