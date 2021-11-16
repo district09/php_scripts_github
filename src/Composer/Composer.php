@@ -45,7 +45,7 @@ class Composer extends DependencyFileAbstract
                 foreach ($this->data[$type] as $package_key => $package_info) {
                     if (substr($package_info['name'], -strlen($name)) === $name) {
                         $factory = new ProjectFactory();
-                        return $factory->create($name, $this->data[$type][$package_key]);
+                          return $factory->create($name, $this->data[$type][$package_key]);
                     }
                 }
             }

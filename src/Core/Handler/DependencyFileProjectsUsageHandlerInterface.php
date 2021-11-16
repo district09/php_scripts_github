@@ -8,12 +8,14 @@ namespace DigipolisGent\Github\Core\Handler;
 interface DependencyFileProjectsUsageHandlerInterface
 {
     /**
-     * Find usages in a single repository.
+     * Find usages of a single project in a single repository.
      *
-     * @param array $repository
-     *   The repository information.
-     * @param array $found
-     *   The array to store the found results in.
+     * @param string $repository
+     *   The repository name.
+     * @param string $project
+     *   The project name to find.
+     *
+     * @return Usage|false
      */
-    public function getUsageInRepository($repository, array &$found);
+    public function getUsageInRepository($repository, $project);
 }

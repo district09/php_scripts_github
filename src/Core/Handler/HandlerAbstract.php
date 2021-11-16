@@ -26,7 +26,7 @@ abstract class HandlerAbstract implements LoggerAwareInterface
      *
      * @var LoggerInterface
      */
-    private $logger;
+    protected $logger;
 
     /**
      * Class constructor.

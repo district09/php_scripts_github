@@ -2,54 +2,23 @@
 
 namespace DigipolisGent\Github\Composer;
 
-use DigipolisGent\Github\Core\Handler\DependencyFileProjectsUsageHandlerInterface;
-use DigipolisGent\Github\Core\Handler\HandlerAbstract;
-use DigipolisGent\Github\Core\Service\Source;
+use DigipolisGent\Github\Composer\Composer;
+use DigipolisGent\Github\Core\Handler\UsageHandlerAbstract;
+use DigipolisGent\Github\Core\Project\Usage;
 
 /**
  * Handler to find Composer project usages within repositories.
  *
  * @package DigipolisGent\Github\Composer
  */
-class ComposerProjectsUsageHandler extends HandlerAbstract implements DependencyFileProjectsUsageHandlerInterface
+class ComposerProjectsUsageHandler extends UsageHandlerAbstract
 {
-    /**
-     * The source service to use.
-     *
-     * @var Source
-     */
-    private $service;
 
     /**
-     * The projects to search for.
-     *
-     * @var array
+     * {@inheritdoc}
      */
-    private $projects = [];
-
-    /**
-     * Construct the handler.
-     *
-     * @param Source $service
-     * @param array $projects
-     */
-    public function __construct(Source $service, array $projects)
+    public function getUsageInRepository($repository, $project)
     {
-        $this->service = $service;
-        $this->projects = $projects;
-    }
-
-    /**
-     * Find usages in a single repository.
-     *
-     * @param array $repository
-     *   The repository information.
-     * @param array $found
-     *   The array to store the found results in.
-     */
-    public function getUsageInRepository($repository, array &$found)
-    {
-        $projects = $this->projects;
         // Get the composer.lock file for the repository.
         $response = $this->service->raw($repository['name'], 'composer.lock');
         if (!array_key_exists('content', $response)) {
@@ -57,14 +26,13 @@ class ComposerProjectsUsageHandler extends HandlerAbstract implements Dependency
         }
         $composer = base64_decode($response['content']);
 
-        foreach ($projects as $projectName) {
-            $composerContent = Composer::fromRaw($composer);
-            $project = $composerContent->searchProject($projectName);
+        $composerContent = Composer::fromRaw($composer);
+        $projectInfo = $composerContent->searchProject($project);
 
-            if ($project) {
-                $found[$projectName][] = $repository['name'];
-                continue;
-            }
+        if ($projectInfo) {
+            return new Usage($projectInfo, $repository['name']);
         }
+
+        return false;
     }
 }

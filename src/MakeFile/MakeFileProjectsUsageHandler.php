@@ -3,53 +3,24 @@
 namespace DigipolisGent\Github\MakeFile;
 
 use DigipolisGent\Github\Core\Handler\DependencyFileProjectsUsageHandlerInterface;
-use DigipolisGent\Github\Core\Handler\HandlerAbstract;
-use DigipolisGent\Github\Core\Service\Source;
+use DigipolisGent\Github\Core\Handler\UsageHandlerAbstract;
+use DigipolisGent\Github\Core\Project\ProjectInterface;
+use DigipolisGent\Github\Core\Project\Usage;
+use DigipolisGent\Github\MakeFile\Project\MakeFileUsage;
 
 /**
  * Handler to find MakeFile project usages within repositories.
  *
  * @package DigipolisGent\Github\MakeFile
  */
-class MakeFileProjectsUsageHandler extends HandlerAbstract implements DependencyFileProjectsUsageHandlerInterface
+class MakeFileProjectsUsageHandler extends UsageHandlerAbstract implements DependencyFileProjectsUsageHandlerInterface
 {
-    /**
-     * The source service to use.
-     *
-     * @var Source
-     */
-    private $service;
 
     /**
-     * The projects to search for.
-     *
-     * @var array
+     * {@inheritdoc}
      */
-    private $projects = [];
-
-    /**
-     * Construct the handler.
-     *
-     * @param Source $service
-     * @param array $projects
-     */
-    public function __construct(Source $service, array $projects)
+    public function getUsageInRepository($repository, $project)
     {
-        $this->service = $service;
-        $this->projects = $projects;
-    }
-
-    /**
-     * Find usages in a single repository.
-     *
-     * @param array $repository
-     *   The repository information.
-     * @param array $found
-     *   The array to store the found results in.
-     */
-    public function getUsageInRepository($repository, array &$found)
-    {
-        $projects = $this->projects;
 
         // Get the make file for the repository.
         $response = $this->service->raw($repository['name'], 'build.make.yml');
@@ -58,15 +29,11 @@ class MakeFileProjectsUsageHandler extends HandlerAbstract implements Dependency
         }
         $makeFile = base64_decode($response['content']);
 
-        foreach ($projects as $project) {
-            if ($this->getUsageInRepositoryAsBrick($project, $makeFile)) {
-                $found[$project]['brick'][] = $repository['name'];
-                continue;
-            }
-            if ($this->getUsageInRepositoryAsCustom($project, $repository)) {
-                $found[$project]['custom'][] = $repository['name'];
-                continue;
-            }
+        if ($projectInfo = $this->getUsageInRepositoryAsBrick($project, $makeFile)) {
+            return new MakeFileUsage($projectInfo, $repository['name'], MakeFileUsage::USAGE_BRICK);
+        }
+        if ($projectInfo = $this->getUsageInRepositoryAsCustom($project, $repository)) {
+            return new MakeFileUsage($projectInfo, $repository['name'], MakeFileUsage::USAGE_CUSTOM);
         }
     }
 
@@ -78,34 +45,12 @@ class MakeFileProjectsUsageHandler extends HandlerAbstract implements Dependency
      * @param string $makeFile.
      *   The make file content.
      *
-     * @return bool
-     *   Found.
+     * @return ProjectInterface|false
      */
     protected function getUsageInRepositoryAsBrick($projectName, $makeFile)
     {
         $makeContent = MakeFile::fromRaw($makeFile);
-        $project = $makeContent->searchProject($projectName);
-        if (!$project) {
-            return false;
-        }
-
-        $this->logVerbose(
-            '  > Found project %s as brick:',
-            $projectName
-        );
-        $this->logVerbose(
-            '    - Version : %s',
-            $project->getVersion()
-        );
-        $this->logVerbose(
-            '    - SourceType : %s',
-            $project->getSourceType()
-        );
-        $this->logVerbose(
-            '    - SourceUrl : %s',
-            $project->getSourceUrl()
-        );
-        return true;
+        return $makeContent->searchProject($projectName);
     }
 
     /**
@@ -121,38 +66,37 @@ class MakeFileProjectsUsageHandler extends HandlerAbstract implements Dependency
      * @param array $repository
      *   The repository to search in.
      *
-     * @return bool
-     *   Found.
+     * @return ProjectInterface|false
      */
     protected function getUsageInRepositoryAsCustom($project, $repository)
     {
-        if ($this->getProfileUsageInRepositoryAsCustom($project, $repository)) {
+        if ($projectInfo = $this->getProfileUsageInRepositoryAsCustom($project, $repository)) {
             $this->logVerbose(
                 '  > Found %s as custom profile.',
                 $project
             );
-            return true;
+            return $projectInfo;
         }
-        if ($this->getModuleUsageInRepositoryAsCustom($project, $repository)) {
+        if ($projectInfo = $this->getModuleUsageInRepositoryAsCustom($project, $repository)) {
             $this->logVerbose(
                 '  > Found %s as custom module.',
                 $project
             );
-            return true;
+            return $projectInfo;
         }
-        if ($this->getFeatureUsageInRepositoryAsCustom($project, $repository)) {
+        if ($projectInfo = $this->getFeatureUsageInRepositoryAsCustom($project, $repository)) {
             $this->logVerbose(
                 '  > Found %s as custom feature.',
                 $project
             );
-            return true;
+            return $projectInfo;
         }
-        if ($this->getThemeUsageInRepositoryAsCustom($project, $repository)) {
+        if ($projectInfo = $this->getThemeUsageInRepositoryAsCustom($project, $repository)) {
             $this->logVerbose(
                 '  > Found %s as custom theme.',
                 $project
             );
-            return true;
+            return $projectInfo;
         }
 
         return false;
@@ -166,8 +110,7 @@ class MakeFileProjectsUsageHandler extends HandlerAbstract implements Dependency
      * @param array $repository
      *   The repository to search in.
      *
-     * @return bool
-     *   Found.
+     * @return ProjectInterface|false
      */
     public function getProfileUsageInRepositoryAsCustom($profile, $repository)
     {
@@ -176,7 +119,9 @@ class MakeFileProjectsUsageHandler extends HandlerAbstract implements Dependency
             'custom/profile/' . $profile . '/' . $profile . 'info'
         );
 
-        return array_key_exists('content', $response);
+        return array_key_exists('content', $response)
+            ? (new Project\ProjectFactory())->create($profile, $repository)
+            : false;
     }
 
     /**
@@ -187,8 +132,7 @@ class MakeFileProjectsUsageHandler extends HandlerAbstract implements Dependency
      * @param array $repository
      *   The repository to search in.
      *
-     * @return bool
-     *   Found.
+     * @return ProjectInterface|false
      */
     public function getModuleUsageInRepositoryAsCustom($module, $repository)
     {
@@ -197,7 +141,9 @@ class MakeFileProjectsUsageHandler extends HandlerAbstract implements Dependency
             "custom/modules/custom/{$module}/{$module}.info"
         );
 
-        return array_key_exists('content', $response);
+        return array_key_exists('content', $response)
+            ? (new Project\ProjectFactory())->create($profile, $repository)
+            : false;
     }
 
     /**
@@ -208,8 +154,7 @@ class MakeFileProjectsUsageHandler extends HandlerAbstract implements Dependency
      * @param array $repository
      *   The repository to search in.
      *
-     * @return bool
-     *   Found.
+     * @return ProjectInterface|false
      */
     public function getFeatureUsageInRepositoryAsCustom($feature, $repository)
     {
@@ -218,7 +163,9 @@ class MakeFileProjectsUsageHandler extends HandlerAbstract implements Dependency
             "custom/modules/features/{$feature}/{$feature}.info"
         );
 
-        return array_key_exists('content', $response);
+        return array_key_exists('content', $response)
+            ? (new Project\ProjectFactory())->create($profile, $repository)
+            : false;
     }
 
     /**
@@ -229,8 +176,7 @@ class MakeFileProjectsUsageHandler extends HandlerAbstract implements Dependency
      * @param array $repository
      *   The repository to search in.
      *
-     * @return bool
-     *   Found.
+     * @return ProjectInterface|false
      */
     public function getThemeUsageInRepositoryAsCustom($theme, $repository)
     {
@@ -239,6 +185,8 @@ class MakeFileProjectsUsageHandler extends HandlerAbstract implements Dependency
             "custom/themes/{$theme}/{$theme}.info"
         );
 
-        return array_key_exists('content', $response);
+        return array_key_exists('content', $response)
+            ? (new Project\ProjectFactory())->create($profile, $repository)
+            : false;
     }
 }

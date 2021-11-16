@@ -20,6 +20,7 @@ class ProjectFactory
         'DigipolisGent\Github\MakeFile\Project\Download',
         'DigipolisGent\Github\MakeFile\Project\Duplo',
         'DigipolisGent\Github\MakeFile\Project\Git',
+        'DigipolisGent\Github\MakeFile\Project\Custom',
     ];
 
     /**
