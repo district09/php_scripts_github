@@ -55,6 +55,8 @@ class SetDefaultBranchCommand extends AbstractCommand
         }
 
         $this->logger->notice(sprintf('Updated %d repositories.', $updated));
+
+        return 0;
     }
 
     /**
