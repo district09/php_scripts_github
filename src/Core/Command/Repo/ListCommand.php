@@ -45,5 +45,7 @@ class ListCommand extends AbstractCommand
             ['Name', 'Full Name'],
             $items
         );
+
+        return 0;
     }
 }
