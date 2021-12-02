@@ -119,6 +119,8 @@ class ProtectCommand extends AbstractCommand
         }
 
         $this->logger->notice(sprintf('Protected %d branches.', $updated));
+
+        return 0;
     }
 
     /**
