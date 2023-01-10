@@ -142,7 +142,7 @@ class MakeFileProjectsUsageHandler extends UsageHandlerAbstract implements Depen
         );
 
         return array_key_exists('content', $response)
-            ? (new Project\ProjectFactory())->create($profile, $repository)
+            ? (new Project\ProjectFactory())->create($module, $repository)
             : false;
     }
 
