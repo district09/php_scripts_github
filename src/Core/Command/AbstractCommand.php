@@ -149,7 +149,7 @@ abstract class AbstractCommand extends Command
                 ->authenticate(
                     $input->getOption('access-token'),
                     '',
-                    Client::AUTH_HTTP_PASSWORD
+                    \Github\AuthMethod::ACCESS_TOKEN
                 );
         } catch (TwoFactorAuthenticationRequiredException $e) {
             throw new InvalidOptionException(
